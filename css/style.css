@@ -1,0 +1,17 @@
+html, body {
+  /* height: calc(100% - 55px); */
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+main[role="main"]{
+  /* margin-top:55px; */
+  height:calc(100% - 70px);
+}
+
+#map-canvas {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
