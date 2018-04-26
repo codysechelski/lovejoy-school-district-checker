@@ -1,8 +1,21 @@
 let
   map,
   geoCoder,
-  currentBounds;
+  originalBounds,
+  currentBounds,
+  styledFeatures = true,
+  styledLisd = true;
+  markersArray = [];
 
+
+//Event Listeners
+document.getElementById('btnAddressCheck').addEventListener('click', codeAddress);
+document.getElementById('btnClearMarkers').addEventListener('click', clearMarkers);
+document.getElementById('btnToggleStyle').addEventListener('click', toggleFeatureStyle);
+document.getElementById('btnToggleLisdBounds').addEventListener('click', toggleLisdStyle);
+document.getElementById('btnCenterMap').addEventListener('click', centerMap);
+
+//Init Map
 function initMap() {
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     zoom: 13,
@@ -12,50 +25,16 @@ function initMap() {
   map.data.loadGeoJson('https://api.myjson.com/bins/14anrb', undefined, function () {
     map.data.forEach(function (feature) {
       if (feature.f.id === 'lisd') {
-        currentBounds = getPolygonBounds(feature);
+        currentBounds =  getPolygonBounds(feature);
+        originalBounds = new google.maps.LatLngBounds(currentBounds.getSouthWest(), currentBounds.getNorthEast());
         map.fitBounds(currentBounds);
       }
     });
   });
 
-  map.data.setStyle(function (feature) {
-    var featureName = feature.getProperty('name');
-    var color;
-    var sColor;
-    var sWeight;
-    if (featureName === 'McKinney') {
-      color = 'green';
-      sWeight = 0;
-    }
-    else if (featureName === 'Fairview') {
-      color = 'blue';
-      sWeight = 0;
-    }
-    else if (featureName === 'Allen') {
-      color = 'yellow';
-      sWeight = 0;
-    }
-    else if (featureName === 'Lucas') {
-      color = 'red';
-      sWeight = 0;
-    }
-    else if (featureName === 'Wylie') {
-      color = 'magenta';
-      sWeight = 0;
-    }
-    else if (featureName === 'Lovejoy Independent School District') {
-      color = 'transparent';
-      sColor = 'red';
-      sWeight = 1;
-    }
-    return {
-      fillColor: color,
-      strokeWeight: sWeight,
-      strokeColor: sColor,
-      clickable: false
-    };
-  });
-
+  styleFeatures();
+  styleLisd();
+  
   let infowindow = new google.maps.InfoWindow();
   map.data.addListener('click', function (event) {
     infowindow.setContent(event.feature.getProperty('name'));
@@ -66,21 +45,20 @@ function initMap() {
 }
 
 
-document.getElementById('btnAddressCheck').addEventListener('click', codeAddress);
-
 function codeAddress(e) {
   const geocoder = new google.maps.Geocoder();
   const address = document.getElementById('tbAddress').value;
   geocoder.geocode({ 'address': address }, function (results, status) {
     if (status == google.maps.GeocoderStatus.OK) {
-      console.log(results);
       currentBounds.extend(results[0].geometry.location);
       map.fitBounds(currentBounds);
-      var marker = new google.maps.Marker({
+      let marker = new google.maps.Marker({
         map: map,
         position: results[0].geometry.location,
         title: results[0].formatted_address
       });
+      markersArray.push(marker);
+      document.getElementById('tbAddress').value = '';
     } else {
       swal("Opps!", "Unable to find that address", "error");
     }
@@ -98,4 +76,150 @@ function getPolygonBounds(feature) {
   });
 
   return bounds;
+}
+
+
+
+function clearMarkers(){
+  markersArray.forEach(function(marker){
+    marker.setMap(null);
+  });
+  map.fitBounds(originalBounds);
+}
+
+function styleFeatures(){
+  map.data.setStyle(function (feature) {
+    const featureId = feature.getProperty('id');
+    if (featureId !== 'lisd') {
+      return featureStyles[featureId];
+    }
+    else{
+      if (styledLisd) {
+        return featureStyles[featureId];
+      } else{
+        return featureStyles['hidden'];
+      }
+    }
+  });
+  styledFeatures = true;
+}
+
+function styleLisd(){
+  map.data.setStyle(function (feature) {
+    const featureId = feature.getProperty('id');
+    if (featureId === 'lisd') {
+      return featureStyles[featureId];
+    }
+    else{
+      if (styledFeatures) {
+        return featureStyles[featureId];
+      }
+      else{
+        return featureStyles['hidden'];
+      }
+    }
+  });
+  styledLisd = true;
+}
+
+function unstyleFeatures(){
+  map.data.setStyle(function (feature) {
+    const featureId = feature.getProperty('id');
+    if (featureId !== 'lisd') {
+      return featureStyles['hidden'];
+    }
+    else{
+      if(styledLisd){
+        return featureStyles[featureId];
+      } else{
+        return featureStyles['hidden'];
+      }
+    }
+  });
+  styledFeatures = false;
+}
+
+
+function unstyleLisd(){
+  map.data.setStyle(function (feature) {
+    const featureId = feature.getProperty('id');
+    if (featureId === 'lisd') {
+      return featureStyles['hidden'];
+    }
+    else{
+      if (styledFeatures) {
+        return featureStyles[featureId];
+      }
+      else{
+        return featureStyles['hidden'];
+      }
+    }
+  });
+  styledLisd = false;
+}
+
+
+function toggleFeatureStyle(){
+  if (styledFeatures) {
+    unstyleFeatures();
+  } else {
+    styleFeatures();
+  }
+}
+
+function toggleLisdStyle(){
+  if (styledLisd) {
+    unstyleLisd();
+  } else {
+    styleLisd();
+  }
+}
+
+function centerMap(){
+  map.fitBounds(originalBounds);
+}
+
+const featureStyles = {
+  wylie : {
+    fillColor   : 'magenta',
+    strokeColor : 'transparent',
+    strokeWeight: 0,
+    clickable   : false
+  },
+  mckinney : {
+    fillColor   : 'green',
+    strokeColor : 'transparent',
+    strokeWeight: 0,
+    clickable   : false
+  },
+  fairview : {
+    fillColor   : 'blue',
+    strokeColor : 'transparent',
+    strokeWeight: 0,
+    clickable   : false
+  },
+  allen : {
+    fillColor   : 'yellow',
+    strokeColor : 'transparent',
+    strokeWeight: 0,
+    clickable   : false
+  },
+  lucas : {
+    fillColor   : 'red',
+    strokeColor : 'transparent',
+    strokeWeight: 0,
+    clickable   : false
+  },
+  lisd : {
+    fillColor   : 'transparent',
+    strokeColor : 'red',
+    strokeWeight: 1,
+    clickable   : false
+  },
+  hidden : {
+    fillColor   : 'transparent',
+    strokeColor : 'transparent',
+    strokeWeight: 0,
+    clickable   : false
+  }
 }
