@@ -1,7 +1,6 @@
 let
   map,
   geoCoder,
-  http = new easyhttp(),
   currentBounds;
 
 function initMap() {
@@ -40,23 +39,11 @@ function initMap() {
       color = 'red';
       sWeight = 0;
     }
-    else if (featureName === 'Parker') {
-      color = 'orange';
-      sWeight = 0;
-    }
-    else if (featureName === 'Saint Paul') {
-      color = 'yellow';
-      sWeight = 0;
-    }
     else if (featureName === 'Wylie') {
       color = 'magenta';
       sWeight = 0;
     }
-    else if (featureName === 'Lowry Crossing') {
-      color = 'orange';
-      sWeight = 0;
-    }
-    else {
+    else if (featureName === 'Lovejoy Independent School District') {
       color = 'transparent';
       sColor = 'red';
       sWeight = 1;
