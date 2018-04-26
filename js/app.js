@@ -181,38 +181,38 @@ function centerMap(){
 
 const featureStyles = {
   wylie : {
-    fillColor   : 'magenta',
+    fillColor   : '#177A96',
     strokeColor : 'transparent',
     strokeWeight: 0,
     clickable   : false
   },
   mckinney : {
-    fillColor   : 'green',
+    fillColor   : '#8FCFDB',
     strokeColor : 'transparent',
     strokeWeight: 0,
     clickable   : false
   },
   fairview : {
-    fillColor   : 'blue',
+    fillColor   : '#E8B542',
     strokeColor : 'transparent',
     strokeWeight: 0,
     clickable   : false
   },
   allen : {
-    fillColor   : 'yellow',
+    fillColor   : '#E47500',
     strokeColor : 'transparent',
     strokeWeight: 0,
     clickable   : false
   },
   lucas : {
-    fillColor   : 'red',
+    fillColor   : '#BF0001',
     strokeColor : 'transparent',
     strokeWeight: 0,
     clickable   : false
   },
   lisd : {
     fillColor   : 'transparent',
-    strokeColor : 'red',
+    strokeColor : '#BF0001',
     strokeWeight: 1,
     clickable   : false
   },
