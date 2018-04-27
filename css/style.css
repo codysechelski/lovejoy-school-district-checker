@@ -19,3 +19,40 @@ main[role="main"]{
 .dropdown-toggle::after {
   display:none
 }
+
+#legend {
+  width:130px;
+  padding:6px;
+  background: #fff;
+  border-radius: 2px;
+  box-shadow: 1px 1px 8px #888888;
+  margin:12px;
+  position: absolute;
+}
+
+#legend h3 {
+    font-size: 1.4em;
+}
+
+#legend ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#legend ul li {
+  margin: 2px 0;
+}
+
+#legend ul li span.legend-swatch {
+  height: 12px;
+  width: 12px;
+  border-radius: 2px;
+  margin-right: 6px;
+  display: block;
+  float: left;
+}
+
+span.legend-swatch-city{
+  opacity: .3;
+}
