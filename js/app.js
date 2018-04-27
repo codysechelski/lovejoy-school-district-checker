@@ -118,6 +118,7 @@ function clearMarkers() {
     marker.setMap(null);
   });
   map.fitBounds(originalBounds);
+  currentBounds = originalBounds;
 }
 
 
