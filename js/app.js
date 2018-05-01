@@ -272,8 +272,8 @@ function initMap() {
   map = new google.maps.Map(document.getElementById('map-canvas'), {
     zoom: 13,
     center: {
-      lat: 33.0846819,
-      lng: -96.5705341
+      lat: 33.119768,
+      lng: -96.58500800000002
     }
   });
 
@@ -282,11 +282,8 @@ function initMap() {
       if (feature.f.id === 'lisd') {
         lisdFeature = feature;
         currentBounds = getPolygonBounds(feature);
-        console.log('currentBounds', currentBounds);
-        console.log('setting original bounds');
         
         originalBounds = new google.maps.LatLngBounds(currentBounds.getSouthWest(), currentBounds.getNorthEast());
-        console.log('originalBounds', originalBounds);
         
         map.fitBounds(currentBounds);
       }
