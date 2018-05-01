@@ -19,6 +19,12 @@ document.getElementById('btnToggleStyle').addEventListener('click', toggleFeatur
 document.getElementById('btnToggleLisdBounds').addEventListener('click', toggleLisdStyle);
 document.getElementById('btnCenterMap').addEventListener('click', centerMap);
 
+document.getElementById('btnAddressCheckSm').addEventListener('click', codeAddress);
+document.getElementById('btnClearMarkersSm').addEventListener('click', clearMarkers);
+document.getElementById('btnToggleStyleSm').addEventListener('click', toggleFeatureStyle);
+document.getElementById('btnToggleLisdBoundsSm').addEventListener('click', toggleLisdStyle);
+document.getElementById('btnCenterMapSm').addEventListener('click', centerMap);
+
 /**
  * Geocodes an address query and creates
  * a map marker
@@ -276,7 +282,12 @@ function initMap() {
       if (feature.f.id === 'lisd') {
         lisdFeature = feature;
         currentBounds = getPolygonBounds(feature);
+        console.log('currentBounds', currentBounds);
+        console.log('setting original bounds');
+        
         originalBounds = new google.maps.LatLngBounds(currentBounds.getSouthWest(), currentBounds.getNorthEast());
+        console.log('originalBounds', originalBounds);
+        
         map.fitBounds(currentBounds);
       }
       legendItems.push({
