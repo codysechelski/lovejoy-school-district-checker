@@ -1,32 +1,32 @@
 const featureStyles = {
   wylie: {
     fillColor   : '#BF0001',
-    strokeColor : 'transparent',
-    strokeWeight: 0,
+    strokeColor : '#ce8482',
+    strokeWeight: 1,
     clickable   : false
   },
   mckinney: {
     fillColor   : '#4bf576',
-    strokeColor : 'transparent',
-    strokeWeight: 0,
+    strokeColor : '#4bf576',
+    strokeWeight: 1,
     clickable   : false
   },
   fairview: {
-    fillColor   : '#E8B542',
-    strokeColor : 'transparent',
-    strokeWeight: 0,
+    fillColor   : '#bf4cce',
+    strokeColor : '#d490dd',
+    strokeWeight: 1,
     clickable   : false
   },
   allen: {
     fillColor   : '#E47500',
-    strokeColor : 'transparent',
-    strokeWeight: 0,
+    strokeColor : '#d3a87c',
+    strokeWeight: 1,
     clickable   : false
   },
   lucas: {
     fillColor   : '#177A96',
-    strokeColor : 'transparent',
-    strokeWeight: 0,
+    strokeColor : '#83b8c6',
+    strokeWeight: 1,
     clickable   : false
   },
   lisd: {
