@@ -10,6 +10,7 @@ let
   infoWindowArray = [],
   legendItems = [],
   legend = document.getElementById('legend');
+  footer = document.getElementById('footerMsg');
 
 
 //Event Listeners
@@ -24,6 +25,8 @@ document.getElementById('btnClearMarkersSm').addEventListener('click', clearMark
 document.getElementById('btnToggleStyleSm').addEventListener('click', toggleFeatureStyle);
 document.getElementById('btnToggleLisdBoundsSm').addEventListener('click', toggleLisdStyle);
 document.getElementById('btnCenterMapSm').addEventListener('click', centerMap);
+
+
 
 /**
  * Geocodes an address query and creates
@@ -79,9 +82,18 @@ function codeAddress(e) {
 }
 
 function isInLisd(place) {
-  const point = new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng());
+  console.log('place',place);
+  let point;
   const pathArray = [];
 
+  if(place.place_id){
+  point = new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng());
+  }
+  else{
+    point = new google.maps.LatLng(place.lat, place.lng);
+  }
+  console.log('point',point);
+  
   lisdFeature.getGeometry().getArray().forEach(function (path) {
     path.getArray().forEach(function (latLng) {
       pathArray.push(latLng);
@@ -91,6 +103,8 @@ function isInLisd(place) {
   const poly = new google.maps.Polygon({
     paths: pathArray
   });
+
+  console.log('poly',poly);
 
   return google.maps.geometry.poly.containsLocation(point, poly);
 }
@@ -267,6 +281,47 @@ function buildLegend() {
 }
 
 
+function displayCurrentLocation(){
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(function(position){
+      console.log(position);
+      const pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+
+      const icon = {
+        url: '/assets/img/markers/current-location.svg',
+        anchor: new google.maps.Point(500,500),
+        scaledSize: new google.maps.Size(1000,1000)
+      }
+
+      const marker = new google.maps.Marker({
+        position: pos,
+        icon: icon,
+        draggable: false,
+        map: map
+      });
+
+      if (isInLisd(pos)) {
+        footer.classList.remove('bg-primary');
+        footer.classList.remove('bg-danger');
+        footer.classList.add('bg-success');
+        footer.innerHTML = `
+          <i class="far fa-thumbs-up"></i> You are currently in LISD
+        `;
+      } else{
+        footer.classList.remove('bg-primary');
+        footer.classList.remove('bg-success');
+        footer.classList.add('bg-danger');
+        footer.innerHTML = `
+          <i class="far fa-thumbs-down"></i> You are currently not in LISD
+        `;
+      }
+    });
+  }
+}
+
 //Init Map
 function initMap() {
   map = new google.maps.Map(document.getElementById('map-canvas'), {
@@ -299,5 +354,5 @@ function initMap() {
 
   styleFeatures();
   styleLisd();
-  
 }
+
