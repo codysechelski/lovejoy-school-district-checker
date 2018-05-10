@@ -6,6 +6,9 @@ let
   currentBounds,
   styledFeatures = true,
   styledLisd = true,
+  drivingMode = false,
+  drivingModePollInterval = 1000,
+  currentLocationMarker,
   markersArray = [],
   infoWindowArray = [],
   legendItems = [],
@@ -25,6 +28,44 @@ document.getElementById('btnClearMarkersSm').addEventListener('click', clearMark
 document.getElementById('btnToggleStyleSm').addEventListener('click', toggleFeatureStyle);
 document.getElementById('btnToggleLisdBoundsSm').addEventListener('click', toggleLisdStyle);
 document.getElementById('btnCenterMapSm').addEventListener('click', centerMap);
+document.getElementById('footerMsg').addEventListener('click', stopDrivingMode);
+
+
+function stopDrivingMode(e) {
+  if (e.target.classList.contains('stopTracking')) {
+    drivingMode = false;
+
+    footer.classList.remove('bg-success');
+    footer.classList.remove('bg-danger');
+    footer.classList.add('bg-primary');
+    footer.innerHTML = `
+          <a class="startTracking" href="#">Start Driving Mode</a>
+        `;
+  } else if (e.target.classList.contains('startTracking')) {
+    startDrivingMode();
+  }
+
+  e.preventDefault();
+}
+
+function startDrivingMode() {
+  drivingMode = true;
+  displayCurrentLocation();
+  checkPollCondition();
+}
+
+function pollForLOcation() {
+  displayCurrentLocation();
+  checkPollCondition();
+}
+
+function checkPollCondition() {
+  setTimeout(() => {
+    if (drivingMode) {
+      pollForLOcation();
+    }
+  }, drivingModePollInterval);
+}
 
 
 
@@ -290,25 +331,19 @@ function displayCurrentLocation(){
         lng: position.coords.longitude
       };
 
-      const icon = {
-        url: '/assets/img/markers/current-location.svg',
-        anchor: new google.maps.Point(500,500),
-        scaledSize: new google.maps.Size(1000,1000)
-      }
 
-      const marker = new google.maps.Marker({
-        position: pos,
-        icon: icon,
-        draggable: false,
-        map: map
-      });
+      currentLocationMarker.setPosition(pos);
+      
 
+      console.log('currentLocationMarker', currentLocationMarker);
+      
       if (isInLisd(pos)) {
         footer.classList.remove('bg-primary');
         footer.classList.remove('bg-danger');
         footer.classList.add('bg-success');
         footer.innerHTML = `
           <i class="far fa-thumbs-up"></i> You are currently in LISD
+          <a class="stopTracking" href="#">Stop Driving Mode</a>
         `;
       } else{
         footer.classList.remove('bg-primary');
@@ -316,6 +351,7 @@ function displayCurrentLocation(){
         footer.classList.add('bg-danger');
         footer.innerHTML = `
           <i class="far fa-thumbs-down"></i> You are currently not in LISD
+          <a class="stopTracking" href="#">Stop Driving Mode</a>
         `;
       }
     });
@@ -330,6 +366,18 @@ function initMap() {
       lat: 33.119768,
       lng: -96.58500800000002
     }
+  });
+
+  const icon = {
+    url: '/assets/img/markers/current-location.svg',
+    anchor: new google.maps.Point(13, 13),
+    scaledSize: new google.maps.Size(26, 26)
+  }
+  currentLocationMarker = new google.maps.Marker({
+    map: map,
+    icon: icon,
+    clickable: false,
+    draggable: false
   });
 
   map.data.loadGeoJson('https://api.myjson.com/bins/14anrb', undefined, function () {

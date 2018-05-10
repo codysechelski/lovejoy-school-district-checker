@@ -61,3 +61,11 @@ span.legend-swatch-city{
 .footer {
   color:#fff;
 }
+
+.stopTracking,
+.stopTracking:link,
+.stopTracking:visited,
+.stopTracking:active {
+  color:#fff;
+  text-decoration: underline;
+}
